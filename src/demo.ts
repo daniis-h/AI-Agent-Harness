@@ -10,19 +10,24 @@ const add: Tool = {
   parameters: {
     type: 'object',
     properties: { a: { type: 'number' }, b: { type: 'number' } },
-    required: ['a', 'b']
+    required: ['a', 'b'],
+    additionalProperties: false
   },
   async execute(value) {
-    // We TRUST the model here: '2' + 3 would give '23'. Fixed in lecture 2.
+    // Safe now: the harness validated `value` against `parameters`.
     const { a, b } = value as { a: number; b: number };
     return a + b;
   }
 };
 
-// Turn 1: ask for the add tool. Turn 2: the final answer.
+// Turn 1: the model sends "2" as TEXT (models do this).
+// Turn 2: it reads our error and fixes it. Turn 3: the answer.
 const model = scriptedModel([
   { content: '', toolCalls: [
-    { id: 'call-1', name: 'add', arguments: { a: 2, b: 3 } }
+    { id: 'call-1', name: 'add', arguments: { a: '2', b: 3 } }
+  ] },
+  { content: '', toolCalls: [
+    { id: 'call-2', name: 'add', arguments: { a: 2, b: 3 } }
   ] },
   { content: 'The result is 5.' }
 ]);

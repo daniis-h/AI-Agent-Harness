@@ -4,6 +4,8 @@
 //   3. if it asked for tools: run them, save the results
 //   4. repeat until it answers without tools, or the step limit is hit
 import type { AgentResult, Message, Model, Tool } from './types.ts';
+import { ToolRegistry } from './registry.ts';
+import { validate } from './validate.ts';
 
 export async function runAgent(options: {
   model: Model;           // passed in, never imported: any provider fits
@@ -20,15 +22,9 @@ export async function runAgent(options: {
   // No signal given? Use one that never fires, so the code below stays simple.
   const signal = options.signal ?? new AbortController().signal;
   const messages: Message[] = [{ role: 'user', content: prompt }];
-  // name -> tool, so every lookup is instant.
-  const registry = new Map(tools.map(tool => [tool.name, tool]));
-  if (registry.size !== tools.length) {
-    throw new Error('Duplicate tool names'); // an error, not a coin flip
-  }
-  // The menu for the model: the same tools WITHOUT execute.
-  const definitions = tools.map(
-    ({ name, description, parameters }) =>
-      ({ name, description, parameters }));
+  // Bad or duplicate tool names fail HERE, at startup, not mid-run.
+  const registry = new ToolRegistry(tools);
+  const definitions = registry.definitions(); // the menu
   // Every early exit looks the same.
   const aborted = (steps: number): AgentResult =>
     ({ status: 'aborted', messages, steps });
@@ -42,7 +38,9 @@ export async function runAgent(options: {
         { messages: [...messages], tools: definitions, signal });
     } catch (error) {
       if (signal.aborted) return aborted(step); // we cancelled: clean exit
-      throw error;                              // a real crash stays loud
+      // A MODEL problem: no model left to read an error. Stop cleanly.
+      return { status: 'model_error', messages, steps: step,
+        error: error instanceof Error ? error.message : String(error) };
     }
     if (signal.aborted) return aborted(step);
     const calls = response.toolCalls ?? [];
@@ -61,6 +59,14 @@ export async function runAgent(options: {
         // Unknown tool: tell the model (same call id) instead of crashing.
         messages.push({ role: 'tool', callId: call.id,
           content: `Unknown tool: ${call.name}`, isError: true });
+        continue;
+      }
+      // The border check: untrusted arguments never reach execute.
+      const problems = validate(call.arguments, tool.parameters);
+      if (problems.length) {
+        messages.push({ role: 'tool', callId: call.id,
+          content: `Invalid arguments: ${problems.join('; ')}`,
+          isError: true });
         continue;
       }
       try {

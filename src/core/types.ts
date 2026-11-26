@@ -39,8 +39,9 @@ export interface Model {
 
 /** How a run ended. */
 export type AgentResult = {
-  status: 'completed' | 'step_limit' | 'aborted';
+  status: 'completed' | 'step_limit' | 'aborted' | 'model_error';
   answer?: string;      // the model's final text (completed only)
+  error?: string;       // why the model call failed (model_error only)
   messages: Message[];  // the full conversation, for logs and debugging
   steps: number;        // model turns used
 };

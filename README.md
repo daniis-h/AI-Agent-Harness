@@ -24,3 +24,4 @@ npm run demo         # runs the agent with a scripted (fake) model
 | # | Topic |
 |---|---|
 | 1 | The agent loop: contracts, the loop, a fake model, tests, a demo |
+| 2 | Validate tool calls: a tool registry, a small JSON Schema validator, tool errors vs model errors |
