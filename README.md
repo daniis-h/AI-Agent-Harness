@@ -8,7 +8,7 @@
 
 **The engine behind coding agents, built by hand: an agent loop, tool validation and a safe workspace, in plain
 TypeScript with zero runtime dependencies.** Every lecture of the free Zain & Kernel YouTube course
-(channel: YouTube link) adds one piece, and every piece is tested.
+(start with [lecture 1](https://youtu.be/qeU2ULqRj8c)) adds one piece, and every piece is tested.
 
 > The model only **proposes**. Your harness **decides and executes**. That one idea is the whole course.
 
@@ -38,9 +38,9 @@ Needs **Node.js 24+** (it runs `.ts` files directly, no build step). `nvm use` p
 
 | # | Lecture | What you add | Video | Code |
 |---|---|---|---|---|
-| 1 | The agent loop | contracts, the loop, step limit, a fake model, tests | YouTube link | [lecture-1](../../tree/lecture-1) |
-| 2 | Validate tool calls | tool registry, JSON Schema validator, `model_error` | YouTube link | [lecture-2](../../tree/lecture-2) |
-| 3 | A safe workspace | path confinement, no symlinks, a command menu | YouTube link | [lecture-3](../../tree/lecture-3) |
+| 1 | The agent loop | contracts, the loop, step limit, a fake model, tests | [▶ Watch](https://youtu.be/qeU2ULqRj8c) | [lecture-1](../../tree/lecture-1) |
+| 2 | Validate tool calls | tool registry, JSON Schema validator, `model_error` | [▶ Watch](https://youtu.be/zmv4Vn7tJNI) | [lecture-2](../../tree/lecture-2) |
+| 3 | A safe workspace | path confinement, no symlinks, a command menu | coming soon | [lecture-3](../../tree/lecture-3) |
 | 4 | coming soon | real model adapters (OpenAI, Anthropic) | | |
 
 Want the code exactly as it was at the end of a lecture? `git switch --detach lecture-2`.
