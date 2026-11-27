@@ -9,7 +9,8 @@ import type { Tool } from '../core/types.ts';
 
 // Don't follow a symlink at the last step, where the OS supports it.
 const NO_FOLLOW = constants.O_NOFOLLOW ?? 0;
-// One read must not flood the conversation (or the token bill).
+// One read must not flood the conversation (or the token bill), and one
+// write must not fill the disk.
 const MAX_BYTES = 1_000_000;
 
 export class Workspace {
@@ -43,6 +44,12 @@ export class Workspace {
    *  can't create directory trees wherever it likes. */
   async write(path: string, content: string): Promise<void> {
     const full = await this.check(path, true);
+    // Same cap as read(), checked BEFORE open(): open() with O_CREAT and
+    // O_TRUNC would already create or empty the file. Count bytes, not
+    // characters: an emoji is 1-2 characters but 4 bytes in UTF-8.
+    if (Buffer.byteLength(content, 'utf8') > MAX_BYTES) {
+      throw new Error(`Content is larger than ${MAX_BYTES} bytes`);
+    }
     const flags = constants.O_WRONLY | constants.O_CREAT
       | constants.O_TRUNC | NO_FOLLOW;
     const file = await open(full, flags);
