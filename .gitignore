@@ -1,5 +1,18 @@
+# Dependencies (npm ci recreates them)
 node_modules/
+
+# Build output
 dist/
+
+# Secrets: your real .env never goes to Git. The template does.
 .env
 .env.*
+!.env.example
+
+# The agent's playground (created by npm run setup)
+workspace/
+
+# Logs and OS files
 *.log
+.DS_Store
+Thumbs.db

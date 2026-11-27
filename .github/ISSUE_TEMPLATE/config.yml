@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question about a lecture
+    url: https://github.com/daniis-h/AI-Agent-Harness/discussions/categories/q-a
+    about: Ask in Discussions (Q&A): no question is too basic.
+  - name: Show what you built
+    url: https://github.com/daniis-h/AI-Agent-Harness/discussions/categories/show-and-tell
+    about: Built an agent on this harness? We'd love to see it.
