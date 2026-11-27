@@ -1,0 +1,25 @@
+name: Bug report
+description: Something doesn't work as the lecture says
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you run, what did you expect, what did you get?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. npm run setup\n2. npm run demo:workspace\n3. ..."
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Node version and OS
+      placeholder: "node -v: v24.x, Windows 11"
+    validations:
+      required: true

@@ -1,0 +1,26 @@
+# Runs on every push and pull request: the same checks you run locally.
+name: CI
+on:
+  push:
+    branches: [main, Lectures]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]   # path rules differ per OS
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run setup
+      - run: npm run check
+      - run: npm run demo:workspace
